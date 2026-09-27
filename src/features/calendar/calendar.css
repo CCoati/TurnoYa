@@ -1,0 +1,141 @@
+/* FullCalendar Dark SaaS Theme Customization for TurnosYa */
+
+.turnosya-calendar .fc {
+  font-family: inherit;
+  --fc-border-color: rgba(255, 255, 255, 0.08);
+  --fc-page-bg-color: transparent;
+  --fc-neutral-bg-color: rgba(255, 255, 255, 0.03);
+  --fc-list-event-hover-bg-color: rgba(124, 58, 237, 0.15);
+  --fc-today-bg-color: rgba(124, 58, 237, 0.05);
+  --fc-highlight-color: rgba(124, 58, 237, 0.1);
+  color: #F8FAFC;
+}
+
+/* Remove default header toolbar since we use our custom TurnosYa toolbar */
+.turnosya-calendar .fc-header-toolbar {
+  display: none !important;
+}
+
+/* Borders and tables */
+.turnosya-calendar .fc-theme-standard th,
+.turnosya-calendar .fc-theme-standard td {
+  border-color: rgba(255, 255, 255, 0.08) !important;
+}
+
+.turnosya-calendar .fc-scrollgrid {
+  border-color: rgba(255, 255, 255, 0.1) !important;
+  border-radius: 1rem;
+  overflow: hidden;
+}
+
+/* Header Cells (Day names & dates) */
+.turnosya-calendar .fc-col-header-cell {
+  background: rgba(14, 18, 30, 0.85);
+  padding: 0.75rem 0.25rem !important;
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: capitalize;
+  color: #94A3B8;
+}
+
+.turnosya-calendar .fc-col-header-cell.fc-day-today {
+  color: #A78BFA;
+  background: rgba(124, 58, 237, 0.12);
+}
+
+/* Time slots */
+.turnosya-calendar .fc-timegrid-slot {
+  height: 2.75rem !important;
+  border-bottom: 1px dashed rgba(255, 255, 255, 0.04) !important;
+}
+
+.turnosya-calendar .fc-timegrid-slot-label {
+  font-size: 0.7rem;
+  font-weight: 500;
+  color: #64748B;
+  vertical-align: top;
+  padding-right: 0.5rem;
+}
+
+.turnosya-calendar .fc-timegrid-axis {
+  border-color: rgba(255, 255, 255, 0.08) !important;
+}
+
+/* Day grid month numbers */
+.turnosya-calendar .fc-daygrid-day-number {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: #94A3B8;
+  padding: 0.35rem 0.5rem;
+}
+
+.turnosya-calendar .fc-day-today .fc-daygrid-day-number {
+  color: #A78BFA;
+  font-weight: 800;
+}
+
+/* Events */
+.turnosya-calendar .fc-event {
+  border-radius: 0.5rem !important;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.3);
+  cursor: pointer;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+  overflow: hidden;
+}
+
+.turnosya-calendar .fc-event:hover {
+  transform: translateY(-1px) scale(1.01);
+  box-shadow: 0 6px 12px -2px rgba(0, 0, 0, 0.5);
+  z-index: 10 !important;
+}
+
+/* Month view event item */
+.turnosya-calendar .fc-daygrid-event {
+  margin: 1px 2px !important;
+  padding: 2px 4px !important;
+}
+
+/* List view */
+.turnosya-calendar .fc-list-table {
+  border-color: rgba(255, 255, 255, 0.08);
+}
+
+.turnosya-calendar .fc-list-day-cushion {
+  background: rgba(14, 18, 30, 0.9) !important;
+  color: #A78BFA !important;
+  font-size: 0.8rem;
+  font-weight: 700;
+  padding: 0.6rem 1rem !important;
+}
+
+.turnosya-calendar .fc-list-event {
+  cursor: pointer;
+  transition: background 0.15s ease;
+}
+
+.turnosya-calendar .fc-list-event td {
+  border-color: rgba(255, 255, 255, 0.05) !important;
+  padding: 0.65rem 1rem !important;
+  font-size: 0.75rem;
+}
+
+.turnosya-calendar .fc-list-event-dot {
+  border-color: #7C3AED !important;
+}
+
+.turnosya-calendar .fc-list-empty {
+  background: transparent !important;
+  color: #64748B;
+  font-size: 0.85rem;
+  padding: 3rem 1rem !important;
+}
+
+/* Current time indicator line */
+.turnosya-calendar .fc-timegrid-now-indicator-line {
+  border-color: #EC4899 !important;
+  border-width: 2px !important;
+}
+
+.turnosya-calendar .fc-timegrid-now-indicator-arrow {
+  border-color: #EC4899 !important;
+}
