@@ -1,22 +1,31 @@
 import React, { useState, useEffect } from 'react'
 import { AuthProvider, useAuth } from '@/features/auth/AuthContext'
-import { BusinessProvider } from '@/features/businesses/BusinessContext'
+import { BusinessProvider, useBusinessContext } from '@/features/businesses/BusinessContext'
 import { AuthModal, AuthModalMode } from '@/features/auth/AuthModal'
 import { UserProfileModal } from '@/features/auth/UserProfileModal'
 import { BusinessOnboardingWizard } from '@/features/businesses/BusinessOnboardingWizard'
-import { BusinessHoursView } from '@/features/businesses'
 import { ProtectedRoute } from '@/components/ProtectedRoute'
 import { MainLayout } from '@/layouts/MainLayout'
-import { DashboardPage } from '@/pages/DashboardPage'
-import { DesignSystemPage } from '@/pages/DesignSystemPage'
-import { FeaturesArchitecturePage } from '@/pages/FeaturesArchitecturePage'
-import { StaffManagementView } from '@/features/staff'
-import { ServiceManagementView } from '@/features/services'
-import { AppointmentsManagementView } from '@/features/appointments'
-import { CalendarView } from '@/features/calendar'
-import { PublicBookingPage } from '@/pages/PublicBookingPage'
-import { useBusinessContext } from '@/features/businesses/BusinessContext'
+import { LoadingSpinner } from '@/components/ui/LoadingSpinner'
 import { ExternalLink } from 'lucide-react'
+
+// Code-split route components with React.lazy for instant mobile startup
+const DashboardPage = React.lazy(() => import('@/pages/DashboardPage').then(m => ({ default: m.DashboardPage })))
+const PublicBookingPage = React.lazy(() => import('@/pages/PublicBookingPage').then(m => ({ default: m.PublicBookingPage })))
+const CalendarView = React.lazy(() => import('@/features/calendar').then(m => ({ default: m.CalendarView })))
+const AppointmentsManagementView = React.lazy(() => import('@/features/appointments').then(m => ({ default: m.AppointmentsManagementView })))
+const StaffManagementView = React.lazy(() => import('@/features/staff').then(m => ({ default: m.StaffManagementView })))
+const ServiceManagementView = React.lazy(() => import('@/features/services').then(m => ({ default: m.ServiceManagementView })))
+const BusinessHoursView = React.lazy(() => import('@/features/businesses').then(m => ({ default: m.BusinessHoursView })))
+const DesignSystemPage = React.lazy(() => import('@/pages/DesignSystemPage').then(m => ({ default: m.DesignSystemPage })))
+const FeaturesArchitecturePage = React.lazy(() => import('@/pages/FeaturesArchitecturePage').then(m => ({ default: m.FeaturesArchitecturePage })))
+
+const ViewLoadingFallback: React.FC = () => (
+  <div className="flex flex-col items-center justify-center min-h-[350px] p-8 text-center space-y-3">
+    <LoadingSpinner size="lg" />
+    <span className="text-xs text-slate-400 font-medium">Cargando vista...</span>
+  </div>
+)
 
 const getInitialPublicSlug = (): string | null => {
   if (typeof window === 'undefined') return null
@@ -93,16 +102,18 @@ const AppContent: React.FC = () => {
   // If a public business slug is accessed directly via URL, render standalone public booking page
   if (publicSlug) {
     return (
-      <PublicBookingPage
-        slug={publicSlug}
-        onNavigateToDashboard={() => {
-          if (window.history.pushState) {
-            window.history.pushState({}, '', '/')
-          }
-          setPublicSlug(null)
-          setCurrentTab('dashboard')
-        }}
-      />
+      <React.Suspense fallback={<ViewLoadingFallback />}>
+        <PublicBookingPage
+          slug={publicSlug}
+          onNavigateToDashboard={() => {
+            if (window.history.pushState) {
+              window.history.pushState({}, '', '/')
+            }
+            setPublicSlug(null)
+            setCurrentTab('dashboard')
+          }}
+        />
+      </React.Suspense>
     )
   }
 
@@ -114,8 +125,9 @@ const AppContent: React.FC = () => {
       onOpenProfile={() => setIsProfileModalOpen(true)}
       onOpenCreateBusiness={() => setIsCreateBizModalOpen(true)}
     >
-      {/* 1. Dashboard (Protected) */}
-      {currentTab === 'dashboard' && (
+      <React.Suspense fallback={<ViewLoadingFallback />}>
+        {/* 1. Dashboard (Protected) */}
+        {currentTab === 'dashboard' && (
         <ProtectedRoute
           requireBusiness={false}
           onOpenAuth={handleOpenAuth}
@@ -239,6 +251,7 @@ const AppContent: React.FC = () => {
         onClose={() => setIsCreateBizModalOpen(false)}
         onSuccess={() => setCurrentTab('dashboard')}
       />
+      </React.Suspense>
     </MainLayout>
   )
 }

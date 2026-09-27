@@ -119,9 +119,13 @@ export const MainLayout: React.FC<MainLayoutProps> = ({
               onClick={() => onTabChange('dashboard')}
             >
               <img
-                src="/logosinfondo.png"
+                src="/logo-optimized.png"
                 alt="TurnosYa Logo"
+                width="60"
+                height="40"
                 className="h-10 w-auto object-contain filter drop-shadow-[0_0_12px_rgba(124,58,237,0.4)]"
+                loading="eager"
+                decoding="async"
               />
               <div className="hidden sm:flex flex-col">
                 <div className="flex items-center gap-1.5">
