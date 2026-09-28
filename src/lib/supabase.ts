@@ -10,8 +10,11 @@ import { createClient, SupabaseClient } from '@supabase/supabase-js'
  * 4. Safe against unconfigured states without crashing the React application.
  */
 
-const rawUrl = import.meta.env.VITE_SUPABASE_URL || ''
-const rawKey = import.meta.env.VITE_SUPABASE_ANON_KEY || import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY || ''
+const DEFAULT_SUPABASE_URL = 'https://nniadarklwfqpfwkibqn.supabase.co'
+const DEFAULT_SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5uaWFkYXJrbHdmcXBmd2tpYnFuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTAyOTEzNDIsImV4cCI6MjEwNTg2NzM0Mn0.-27pOj77228g_y2X9ryrhUW7V1ia8e6X0rlBskOeQAQ'
+
+const rawUrl = import.meta.env.VITE_SUPABASE_URL || DEFAULT_SUPABASE_URL
+const rawKey = import.meta.env.VITE_SUPABASE_ANON_KEY || import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY || DEFAULT_SUPABASE_ANON_KEY
 
 export const SUPABASE_URL = rawUrl.trim()
 export const SUPABASE_ANON_KEY = rawKey.trim()
