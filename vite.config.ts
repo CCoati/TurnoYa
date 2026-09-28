@@ -24,18 +24,15 @@ export default defineConfig({
     rollupOptions: {
       output: {
         manualChunks: {
+          // Supabase is used globally (AuthContext, BusinessContext) — shared vendor chunk
           'vendor-supabase': ['@supabase/supabase-js'],
-          'vendor-fullcalendar': [
-            '@fullcalendar/core',
-            '@fullcalendar/react',
-            '@fullcalendar/daygrid',
-            '@fullcalendar/timegrid',
-            '@fullcalendar/list',
-            '@fullcalendar/interaction',
-          ],
-          'vendor-icons': ['lucide-react'],
+          // React is used everywhere — stable vendor chunk for browser caching
+          'vendor-react': ['react', 'react-dom'],
+          // FullCalendar and lucide-react are NOT listed here intentionally:
+          // they get code-split naturally with their respective lazy-loaded views
         },
       },
     },
   },
 })
+

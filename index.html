@@ -7,10 +7,12 @@
     <meta name="theme-color" content="#0a0a0c" />
     <meta name="description" content="TurnosYa - Plataforma SaaS multi-rubro para gestión y reservas de turnos en un click." />
     <title>TurnosYa | Reservas en un Click</title>
-    <!-- Google Fonts: Plus Jakarta Sans with font-display swap -->
+    <!-- Google Fonts: Plus Jakarta Sans (non-blocking async load) -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" media="print" onload="this.media='all'">
+    <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap"></noscript>
   </head>
   <body class="bg-surface-darkest text-slate-100 antialiased font-sans min-h-screen selection:bg-brand-600 selection:text-white">
     <div id="root"></div>

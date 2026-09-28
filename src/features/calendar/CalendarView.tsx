@@ -97,8 +97,8 @@ export const CalendarView: React.FC = () => {
     }
   }
 
-  // Custom Event content renderer
-  const renderEventContent = (eventInfo: any) => {
+  // Custom Event content renderer — memoized to prevent FullCalendar re-rendering all events
+  const renderEventContent = useCallback((eventInfo: any) => {
     const { event, view } = eventInfo
     const props = event.extendedProps
     const isListView = view.type.startsWith('list')
@@ -166,7 +166,7 @@ export const CalendarView: React.FC = () => {
         </div>
       </div>
     )
-  }
+  }, [])
 
   return (
     <div className="space-y-5 animate-fade-in turnosya-calendar">

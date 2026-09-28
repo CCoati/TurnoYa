@@ -33,7 +33,7 @@ class ServiceService implements IServiceService {
     try {
       const { data, error } = await supabase
         .from('services')
-        .select('*')
+        .select('id, business_id, name, description, duration_minutes, price, active, created_at, updated_at')
         .eq('business_id', businessId)
         .order('created_at', { ascending: true })
 
@@ -74,7 +74,7 @@ class ServiceService implements IServiceService {
     try {
       const { data, error } = await supabase
         .from('services')
-        .select('*')
+        .select('id, business_id, name, description, duration_minutes, price, active, created_at, updated_at')
         .eq('business_id', businessId)
         .eq('id', serviceId)
         .single()
@@ -134,7 +134,7 @@ class ServiceService implements IServiceService {
           price: data.price,
           active: data.active ?? true,
         })
-        .select('*')
+        .select('id, business_id, name, description, duration_minutes, price, active, created_at, updated_at')
         .single()
 
       if (error) {
@@ -207,7 +207,7 @@ class ServiceService implements IServiceService {
         .update(updatePayload)
         .eq('business_id', businessId)
         .eq('id', serviceId)
-        .select('*')
+        .select('id, business_id, name, description, duration_minutes, price, active, created_at, updated_at')
         .single()
 
       if (error) {

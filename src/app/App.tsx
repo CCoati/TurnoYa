@@ -1,13 +1,16 @@
 import React, { useState, useEffect } from 'react'
 import { AuthProvider, useAuth } from '@/features/auth/AuthContext'
 import { BusinessProvider, useBusinessContext } from '@/features/businesses/BusinessContext'
-import { AuthModal, AuthModalMode } from '@/features/auth/AuthModal'
-import { UserProfileModal } from '@/features/auth/UserProfileModal'
-import { BusinessOnboardingWizard } from '@/features/businesses/BusinessOnboardingWizard'
+import type { AuthModalMode } from '@/features/auth/AuthModal'
 import { ProtectedRoute } from '@/components/ProtectedRoute'
 import { MainLayout } from '@/layouts/MainLayout'
 import { LoadingSpinner } from '@/components/ui/LoadingSpinner'
 import { ExternalLink } from 'lucide-react'
+
+// Code-split heavy modals — only loaded when actually opened
+const AuthModal = React.lazy(() => import('@/features/auth/AuthModal').then(m => ({ default: m.AuthModal })))
+const UserProfileModal = React.lazy(() => import('@/features/auth/UserProfileModal').then(m => ({ default: m.UserProfileModal })))
+const BusinessOnboardingWizard = React.lazy(() => import('@/features/businesses/BusinessOnboardingWizard').then(m => ({ default: m.BusinessOnboardingWizard })))
 
 // Code-split route components with React.lazy for instant mobile startup
 const DashboardPage = React.lazy(() => import('@/pages/DashboardPage').then(m => ({ default: m.DashboardPage })))
@@ -233,24 +236,36 @@ const AppContent: React.FC = () => {
       {/* 8. Sistema de Diseño */}
       {currentTab === 'design-system' && <DesignSystemPage />}
 
-      {/* Global Modals */}
-      <AuthModal
-        isOpen={authModalState.isOpen}
-        onClose={handleCloseAuth}
-        initialMode={authModalState.mode}
-      />
+      {/* Global Modals — lazy-loaded, only mounted when open */}
+      {authModalState.isOpen && (
+        <React.Suspense fallback={null}>
+          <AuthModal
+            isOpen={authModalState.isOpen}
+            onClose={handleCloseAuth}
+            initialMode={authModalState.mode}
+          />
+        </React.Suspense>
+      )}
 
-      <UserProfileModal
-        isOpen={isProfileModalOpen}
-        onClose={() => setIsProfileModalOpen(false)}
-        onOpenCreateBusiness={() => setIsCreateBizModalOpen(true)}
-      />
+      {isProfileModalOpen && (
+        <React.Suspense fallback={null}>
+          <UserProfileModal
+            isOpen={isProfileModalOpen}
+            onClose={() => setIsProfileModalOpen(false)}
+            onOpenCreateBusiness={() => setIsCreateBizModalOpen(true)}
+          />
+        </React.Suspense>
+      )}
 
-      <BusinessOnboardingWizard
-        isOpen={isCreateBizModalOpen}
-        onClose={() => setIsCreateBizModalOpen(false)}
-        onSuccess={() => setCurrentTab('dashboard')}
-      />
+      {isCreateBizModalOpen && (
+        <React.Suspense fallback={null}>
+          <BusinessOnboardingWizard
+            isOpen={isCreateBizModalOpen}
+            onClose={() => setIsCreateBizModalOpen(false)}
+            onSuccess={() => setCurrentTab('dashboard')}
+          />
+        </React.Suspense>
+      )}
       </React.Suspense>
     </MainLayout>
   )

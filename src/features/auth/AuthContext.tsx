@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useEffect, useState, useCallback } from 'react'
+import React, { createContext, useContext, useEffect, useState, useCallback, useMemo } from 'react'
 import { User, Session } from '@supabase/supabase-js'
 import { supabase } from '@/lib/supabase'
 import { authService } from '@/services/authService'
@@ -118,7 +118,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         setIsPasswordRecovery(true)
       }
 
-      if (event === 'SIGNED_IN' || event === 'TOKEN_REFRESHED' || event === 'USER_UPDATED') {
+      if (event === 'SIGNED_IN' || event === 'USER_UPDATED') {
         setSession(newSession)
         setUser(newSession?.user ?? null)
         if (newSession?.user) {
@@ -127,6 +127,10 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
             fetchMemberships(newSession.user.id),
           ])
         }
+      } else if (event === 'TOKEN_REFRESHED') {
+        // Only update session/user refs — profile and memberships haven't changed
+        setSession(newSession)
+        setUser(newSession?.user ?? null)
       } else if (event === 'SIGNED_OUT') {
         setSession(null)
         setUser(null)
@@ -216,13 +220,15 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }
   }, [])
 
-  const value: AuthContextType = {
+  const isAuthenticated = useMemo(() => Boolean(user && session), [user, session])
+
+  const value: AuthContextType = useMemo(() => ({
     user,
     session,
     profile,
     memberships,
     isLoading,
-    isAuthenticated: Boolean(user && session),
+    isAuthenticated,
     isPasswordRecovery,
     signUp,
     signIn,
@@ -232,7 +238,11 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     refreshProfile,
     refreshMemberships,
     clearPasswordRecovery,
-  }
+  }), [
+    user, session, profile, memberships, isLoading, isAuthenticated,
+    isPasswordRecovery, signUp, signIn, signOut, resetPassword,
+    updatePassword, refreshProfile, refreshMemberships, clearPasswordRecovery,
+  ])
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>
 }

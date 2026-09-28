@@ -44,6 +44,8 @@ export function useCalendarAppointments({ businessId }: UseCalendarAppointmentsP
   }, [loadStaff])
 
   // 2. Load appointments scoped to business and active date range
+  // Note: we fetch ALL appointments for the date range and filter by staff client-side
+  // to avoid unnecessary Supabase roundtrips when switching the staff filter
   const loadAppointments = useCallback(async () => {
     if (!businessId) return
     setIsLoading(true)
@@ -60,9 +62,7 @@ export function useCalendarAppointments({ businessId }: UseCalendarAppointmentsP
       if (dateRange?.endStr) {
         params.endDate = dateRange.endStr
       }
-      if (selectedStaffId !== 'all') {
-        params.staff_id = selectedStaffId
-      }
+      // Intentionally NOT filtering by staff_id here — done client-side in useMemo below
 
       const res = await appointmentService.getAppointments(params)
 
@@ -78,7 +78,7 @@ export function useCalendarAppointments({ businessId }: UseCalendarAppointmentsP
     } finally {
       setIsLoading(false)
     }
-  }, [businessId, dateRange, selectedStaffId])
+  }, [businessId, dateRange])
 
   useEffect(() => {
     loadAppointments()
@@ -95,8 +95,13 @@ export function useCalendarAppointments({ businessId }: UseCalendarAppointmentsP
   }, [staffList])
 
   // 4. Transform appointments into FullCalendar Event objects
+  // Filter by selectedStaffId client-side to avoid re-fetching from Supabase
   const events: CalendarEventItem[] = useMemo(() => {
-    return appointments.map((apt) => {
+    const filtered = selectedStaffId === 'all'
+      ? appointments
+      : appointments.filter((apt) => apt.staff_id === selectedStaffId)
+
+    return filtered.map((apt) => {
       // Color styling based on status
       let bg = '#065F46'
       let border = '#10B981'
@@ -147,7 +152,7 @@ export function useCalendarAppointments({ businessId }: UseCalendarAppointmentsP
         },
       }
     })
-  }, [appointments])
+  }, [appointments, selectedStaffId])
 
   // 5. Update appointment status
   const updateAppointmentStatus = useCallback(

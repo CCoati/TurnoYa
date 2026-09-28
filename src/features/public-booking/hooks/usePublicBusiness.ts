@@ -24,7 +24,7 @@ export function usePublicBusiness(slug: string | null | undefined) {
       // 1. Fetch business by slug
       const { data: bizData, error: bizError } = await supabase
         .from('businesses')
-        .select('*')
+        .select('id, name, slug, category, description, logo_url, phone, email, address, active, created_at, updated_at')
         .eq('slug', slug.trim().toLowerCase())
         .eq('active', true)
         .single()
@@ -55,7 +55,7 @@ export function usePublicBusiness(slug: string | null | undefined) {
       const [servicesRes, staffRes, hoursRes] = await Promise.all([
         supabase
           .from('services')
-          .select('*')
+          .select('id, business_id, name, description, duration_minutes, price, active, created_at, updated_at')
           .eq('business_id', business.id)
           .eq('active', true)
           .order('name', { ascending: true }),
@@ -67,7 +67,7 @@ export function usePublicBusiness(slug: string | null | undefined) {
           .order('name', { ascending: true }),
         supabase
           .from('business_hours')
-          .select('*')
+          .select('id, business_id, day_of_week, is_open, open_time, close_time, created_at, updated_at')
           .eq('business_id', business.id)
           .order('day_of_week', { ascending: true }),
       ])

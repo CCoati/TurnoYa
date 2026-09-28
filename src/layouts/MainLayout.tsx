@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useMemo } from 'react'
 import {
   CalendarDays,
   Store,
@@ -32,7 +32,20 @@ interface MainLayoutProps {
   onOpenCreateBusiness?: () => void
 }
 
-export const MainLayout: React.FC<MainLayoutProps> = ({
+// Static nav items defined outside the component to avoid recreation on every render
+const NAV_ITEMS = [
+  { id: 'dashboard', label: 'Dashboard SaaS', icon: <LayoutDashboard className="w-4 h-4" />, protected: true },
+  { id: 'calendar', label: 'Calendario & Turnos', icon: <CalendarDays className="w-4 h-4" />, protected: true },
+  { id: 'appointments', label: 'Citas', icon: <CalendarCheck className="w-4 h-4" />, protected: true },
+  { id: 'services', label: 'Servicios', icon: <Briefcase className="w-4 h-4" />, protected: true },
+  { id: 'staff', label: 'Profesionales', icon: <Users className="w-4 h-4" />, protected: true },
+  { id: 'hours', label: 'Horarios', icon: <Clock className="w-4 h-4" />, protected: true },
+  { id: 'businesses', label: 'Negocio Multi-Rubro', icon: <Store className="w-4 h-4" /> },
+  { id: 'public-page', label: 'Portal Público', icon: <Globe className="w-4 h-4 text-emerald-400" /> },
+  { id: 'design-system', label: 'Sistema de Diseño', icon: <Palette className="w-4 h-4" /> },
+]
+
+export const MainLayout: React.FC<MainLayoutProps> = React.memo(({
   children,
   currentTab,
   onTabChange,
@@ -48,20 +61,8 @@ export const MainLayout: React.FC<MainLayoutProps> = ({
     setActiveBusinessId,
   } = useBusinessContext()
 
-  const navItems = [
-    { id: 'dashboard', label: 'Dashboard SaaS', icon: <LayoutDashboard className="w-4 h-4" />, protected: true },
-    { id: 'calendar', label: 'Calendario & Turnos', icon: <CalendarDays className="w-4 h-4" />, protected: true },
-    { id: 'appointments', label: 'Citas', icon: <CalendarCheck className="w-4 h-4" />, protected: true },
-    { id: 'services', label: 'Servicios', icon: <Briefcase className="w-4 h-4" />, protected: true },
-    { id: 'staff', label: 'Profesionales', icon: <Users className="w-4 h-4" />, protected: true },
-    { id: 'hours', label: 'Horarios', icon: <Clock className="w-4 h-4" />, protected: true },
-    { id: 'businesses', label: 'Negocio Multi-Rubro', icon: <Store className="w-4 h-4" /> },
-    { id: 'public-page', label: 'Portal Público', icon: <Globe className="w-4 h-4 text-emerald-400" /> },
-    { id: 'design-system', label: 'Sistema de Diseño', icon: <Palette className="w-4 h-4" /> },
-  ]
-
-  // Dynamic user dropdown items
-  const userMenuItems = [
+  // Dynamic user dropdown items — memoized to prevent unnecessary re-renders
+  const userMenuItems = useMemo(() => [
     {
       id: 'profile',
       label: 'Mi Perfil & Ajustes',
@@ -99,7 +100,7 @@ export const MainLayout: React.FC<MainLayoutProps> = ({
       danger: true,
       onClick: () => signOut(),
     },
-  ]
+  ], [availableBusinesses, activeBusiness?.id, onOpenProfile, onTabChange, setActiveBusinessId, onOpenCreateBusiness, signOut])
 
   return (
     <div className="min-h-screen flex flex-col bg-surface-darkest text-slate-100 selection:bg-brand-600 selection:text-white relative">
@@ -142,7 +143,7 @@ export const MainLayout: React.FC<MainLayoutProps> = ({
 
             {/* Desktop Navigation */}
             <nav className="hidden lg:flex items-center gap-1 pl-4 border-l border-white/10">
-              {navItems.map((item) => {
+              {NAV_ITEMS.map((item) => {
                 const isActive = currentTab === item.id
                 return (
                   <button
@@ -251,7 +252,7 @@ export const MainLayout: React.FC<MainLayoutProps> = ({
 
         {/* Mobile / Tablet Horizontal Navigation Scroll */}
         <div className="lg:hidden flex items-center gap-2 px-4 py-2 border-t border-white/5 overflow-x-auto">
-          {navItems.map((item) => {
+          {NAV_ITEMS.map((item) => {
             const isActive = currentTab === item.id
             return (
               <button
@@ -296,4 +297,4 @@ export const MainLayout: React.FC<MainLayoutProps> = ({
       </footer>
     </div>
   )
-}
+})

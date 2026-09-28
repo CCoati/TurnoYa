@@ -36,7 +36,7 @@ class BusinessService implements IBusinessService {
     try {
       const { data, error } = await supabase
         .from('businesses')
-        .select('*')
+        .select('id, name, slug, category, description, logo_url, phone, email, address, active, created_at, updated_at')
         .eq('id', businessId)
         .single()
 
@@ -74,7 +74,7 @@ class BusinessService implements IBusinessService {
     try {
       const { data, error } = await supabase
         .from('businesses')
-        .select('*')
+        .select('id, name, slug, category, description, logo_url, phone, email, address, active, created_at, updated_at')
         .eq('slug', slug)
         .eq('active', true)
         .single()
@@ -202,7 +202,7 @@ class BusinessService implements IBusinessService {
     try {
       const { data, error } = await supabase
         .from('business_hours')
-        .select('*')
+        .select('id, business_id, day_of_week, is_open, open_time, close_time, created_at, updated_at')
         .eq('business_id', businessId)
         .order('day_of_week', { ascending: true })
 
@@ -285,7 +285,7 @@ class BusinessService implements IBusinessService {
       const { data, error } = await supabase
         .from('business_hours')
         .upsert(payload, { onConflict: 'business_id, day_of_week' })
-        .select('*')
+        .select('id, business_id, day_of_week, is_open, open_time, close_time, created_at, updated_at')
         .order('day_of_week', { ascending: true })
 
       if (error) {

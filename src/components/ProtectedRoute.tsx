@@ -29,7 +29,7 @@ export const ProtectedRoute: React.FC<ProtectedRouteProps> = ({
         <div className="relative">
           <div className="absolute inset-0 bg-brand-500/20 blur-xl rounded-full" />
           <img
-            src="/logosinfondo.png"
+            src="/logo-optimized.png"
             alt="TurnosYa Logo"
             className="w-14 h-14 object-contain animate-pulse relative z-10"
           />

@@ -83,7 +83,7 @@ export const BusinessProvider: React.FC<{ children: React.ReactNode }> = ({ chil
     try {
       const { data, error } = await supabase
         .from('businesses')
-        .select('*')
+        .select('id, name, slug, category, description, logo_url, phone, email, address, active, created_at, updated_at')
         .eq('id', businessId)
         .maybeSingle()
 

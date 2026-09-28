@@ -55,42 +55,32 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({
   React.useEffect(() => {
     let isMounted = true
     if (activeBusiness?.id) {
-      // Query staff count
-      supabase
-        .from('staff')
-        .select('id', { count: 'exact', head: true })
-        .eq('business_id', activeBusiness.id)
-        .then(({ count, error }) => {
-          if (isMounted && !error && count !== null) {
-            setStaffCount(count)
-          }
-        })
-
-      // Query active services count
-      supabase
-        .from('services')
-        .select('id', { count: 'exact', head: true })
-        .eq('business_id', activeBusiness.id)
-        .eq('active', true)
-        .then(({ count, error }) => {
-          if (isMounted && !error && count !== null) {
-            setServicesCount(count)
-          }
-        })
-
-      // Query today's active appointments count (excluding cancelled)
+      const businessId = activeBusiness.id
       const todayStr = new Date().toISOString().split('T')[0]
-      supabase
-        .from('appointments')
-        .select('id', { count: 'exact', head: true })
-        .eq('business_id', activeBusiness.id)
-        .eq('appointment_date', todayStr)
-        .neq('status', 'cancelled')
-        .then(({ count, error }) => {
-          if (isMounted && !error && count !== null) {
-            setTodayAppointmentsCount(count)
-          }
-        })
+
+      // Execute all 3 independent count queries in parallel
+      Promise.all([
+        supabase
+          .from('staff')
+          .select('id', { count: 'exact', head: true })
+          .eq('business_id', businessId),
+        supabase
+          .from('services')
+          .select('id', { count: 'exact', head: true })
+          .eq('business_id', businessId)
+          .eq('active', true),
+        supabase
+          .from('appointments')
+          .select('id', { count: 'exact', head: true })
+          .eq('business_id', businessId)
+          .eq('appointment_date', todayStr)
+          .neq('status', 'cancelled'),
+      ]).then(([staffRes, servicesRes, appointmentsRes]) => {
+        if (!isMounted) return
+        if (!staffRes.error && staffRes.count !== null) setStaffCount(staffRes.count)
+        if (!servicesRes.error && servicesRes.count !== null) setServicesCount(servicesRes.count)
+        if (!appointmentsRes.error && appointmentsRes.count !== null) setTodayAppointmentsCount(appointmentsRes.count)
+      })
     }
     return () => {
       isMounted = false
